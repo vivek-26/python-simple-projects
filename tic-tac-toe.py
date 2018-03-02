@@ -114,3 +114,54 @@ def player_choice(board):
 def replay():
     choice = input('Play again? Enter Yes or No: ')
     return choice.lower() == 'yes'
+
+
+# Run the game
+print('Welcome to TIC TAC TOE!')
+
+while True:
+    the_board = [' '] * 10
+    player1_marker, player2_marker = player_input()
+    turn = choose_first()
+    print('{} will go first!'.format(turn))
+
+    play_game = input('Ready to play? Y or N: ')
+    if play_game.lower() == 'y':
+        game_on = True
+    else:
+        game_on = False
+
+    while game_on:
+        if turn == 'Player 1':
+            display_board(the_board)
+            position = player_choice(the_board)
+            place_marker(the_board, player1_marker, position)
+            if win_check(the_board, player1_marker):
+                display_board(the_board)
+                print('PLAYER 1 HAS WON!')
+                game_on = False
+            else:
+                if is_board_full(the_board):
+                    display_board(the_board)
+                    print('TIE GAME!')
+                    game_on = False
+                else:
+                    turn = 'Player 2'
+        else:
+            display_board(the_board)
+            position = player_choice(the_board)
+            place_marker(the_board, player2_marker, position)
+            if win_check(the_board, player2_marker):
+                display_board(the_board)
+                print('PLAYER 2 HAS WON!')
+                game_on = False
+            else:
+                if is_board_full(the_board):
+                    display_board(the_board)
+                    print('TIE GAME!')
+                    game_on = False
+                else:
+                    turn = 'Player 1'
+
+    if not replay():
+        break
