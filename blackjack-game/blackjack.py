@@ -62,3 +62,48 @@ class Deck:
     def deal(self):
         '''Deal'''
         return self.deck.pop()
+
+
+class Hand:
+    '''
+    Represents what cards are currently in someone's hand
+    '''
+
+    def __init__(self):
+        self.cards = []  # Start with an empty list
+        self.value = 0
+        self.aces = 0  # Attribute to kepp track of Aces
+
+    def add_card(self, card):
+        '''Add a card (from Deck.deal())'''
+        self.cards.append(card)
+        self.value += VALUES[card.rank]
+
+        # Track Aces
+        if card.rank == 'Ace':
+            self.aces += 1
+
+    def adjust_for_ace(self):
+        '''Adjust for the Ace'''
+        # If total value > 21, adjust the value
+        while self.value > 21 and self.aces:
+            self.value -= 10
+            self.aces -= 1
+
+
+class Chips:
+    '''
+    Represents player's starting chips, bets and ongoing winnings
+    '''
+
+    def __init__(self, total=100):
+        self.total = total
+        self.bet = 0
+
+    def win_bet(self):
+        '''Player wins the bet'''
+        self.total += self.bet
+
+    def lose_bet(self):
+        '''Player loses the bet'''
+        self.total -= self.bet
