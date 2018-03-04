@@ -195,3 +195,72 @@ def show_all(player, dealer):
     print('\n'.join([str(card) for card in dealer.cards]))
     print('\nPLAYERS HAND:')
     print('\n'.join([str(card) for card in player.cards]))
+
+
+# Start the game
+while True:
+    # Opening statement
+    print('WELCOME TO BALCKJACK')
+
+    # Create and shuffle the deck, deal two cards to each player
+    deck = Deck()
+    deck.shuffle()
+
+    player_hand = Hand()
+    player_hand.add_card(deck.deal())
+    player_hand.add_card(deck.deal())
+
+    dealer_hand = Hand()
+    dealer_hand.add_card(deck.deal())
+    dealer_hand.add_card(deck.deal())
+
+    # Setup Player's chips
+    player_chips = Chips()  # Default is 100
+
+    # Prompt the player for their bet
+    take_bet(player_chips)
+
+    # Show cards (but keep one dealer card hidden)
+    show_some(player_hand, dealer_hand)
+
+    while PLAYING:
+        # Prompt for player to Hit or Stand
+        hit_or_stand(deck, player_hand)
+
+        # Show card (but keep one dealer card hidden)
+        show_some(player_hand, dealer_hand)
+
+        # If player's hand exceeds 21, run player_busts() and break out of loop
+        if player_hand.value > 21:
+            player_busts(player_chips)
+            break
+
+        # If player hasn't busted, play dealer's hand unitl dealer reaches 17
+        # Soft 17 Rule
+        if player_hand.value <= 21:
+            while dealer_hand.value < player_hand.value:
+                hit(deck, dealer_hand)
+
+        # Show all cards
+        show_all(player_hand, dealer_hand)
+
+        # Run different winning scenarios
+        if dealer_hand.value > 21:
+            dealer_busts(player_chips)
+        elif dealer_hand.value > player_hand.value:
+            dealer_wins(player_chips)
+        elif dealer_hand.value < player_hand.value:
+            player_wins(player_chips)
+        else:
+            push()
+
+    # Inform the player of their total chips
+    print('\nPlayer\'s total chips are at {}'.format(player_chips.total))
+
+    # Ask to play again
+    new_game = input('Would you like to play another hand? Y/N: ')
+    if new_game.lower() == 'y':
+        PLAYING = True
+    else:
+        print('Thank you for playing BlackJack!')
+        break
