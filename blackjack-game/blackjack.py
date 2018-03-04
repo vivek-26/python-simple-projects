@@ -23,6 +23,8 @@ VALUES = {
     'Ace': 11
 }
 
+PLAYING = True
+
 
 # Class Definitions
 class Card:
@@ -107,3 +109,89 @@ class Chips:
     def lose_bet(self):
         '''Player loses the bet'''
         self.total -= self.bet
+
+
+# Helper Functions
+def take_bet(chips):
+    '''Ask the player to make a bet'''
+    while True:
+        try:
+            chips.bet = int(input('How many chips would you like to bet? '))
+        except:
+            print('Sorry, please provide an integer!')
+        else:
+            if chips.bet > chips.total:
+                print(
+                    'Sorry, yoou do not have enough chips! You have {} chips'.
+                    format(chips.total))
+            else:
+                break
+
+
+def hit(deck, hand):
+    '''Requesting a hit'''
+    hand.add_card(deck.deal())
+    hand.adjust_for_ace()
+
+
+def hit_or_stand(deck, hand):
+    '''Prompt the player to Hit or Stand'''
+    global PLAYING
+
+    while True:
+        choice = input('Hit or Stand? Enter h or s: ')
+
+        if choice[0].lower() == 'h':
+            hit(deck, hand)
+        elif choice[0].lower() == 's':
+            print('Player Stands, Dealer\'s Turn')
+            PLAYING = False
+        else:
+            print('Sorry, Didn\'t understand that, Please enter h or s only!')
+            continue
+        break
+
+
+def player_busts(chips):
+    '''Player Busts'''
+    print('BUST PLAYER!')
+    chips.lose_bet()
+
+
+def player_wins(chips):
+    '''Player Wins'''
+    print('PLAYER WINS!')
+    chips.win_bet()
+
+
+def dealer_busts(chips):
+    '''Dealer Busts'''
+    print('PLAYER WINS! DEALER BUSTED!')
+    chips.win_bet()
+
+
+def dealer_wins(chips):
+    '''Dealer Wins'''
+    print('DEALER WINS!')
+    chips.lose_bet()
+
+
+def push():
+    '''Player & Dealer Tie'''
+    print('Dealer and player tie! PUSH')
+
+
+def show_some(player, dealer):
+    '''Each time player takes a card, dealer's first card is hidden and
+    all of Player's card are vsible!'''
+    print('DEALERS HAND:\nOne Card Hidden!\n{}\n\nPLAYERS HAND:'.format(
+        dealer.cards[1]))
+    print('\n'.join([str(card) for card in player.cards]))
+
+
+def show_all(player, dealer):
+    '''At the end of the hand, all cars are shown!'''
+    print('DEALERS HAND:')
+    print('\n'.join([str(card) for card in dealer.cards]))
+    print('\nPLAYERS HAND:')
+    print('\n'.join([str(card) for card in player.cards]))
